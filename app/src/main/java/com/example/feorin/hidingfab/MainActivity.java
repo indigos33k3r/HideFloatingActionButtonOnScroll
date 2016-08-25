@@ -47,7 +47,14 @@ public class MainActivity extends AppCompatActivity {
                     // 1. Built-in function
                     // floatingActionButton.hide();
                     // 2. Custom function
-                    animateHideFab();
+//                    animateHideFab();
+                    floatingActionButton.animate()
+                            .scaleX(0)
+                            .scaleY(0)
+                            .setInterpolator(new LinearInterpolator())
+                            .setDuration(200)
+                            .start();
+
 
                 }
                 // While RecyclerView enters idle state
@@ -57,7 +64,13 @@ public class MainActivity extends AppCompatActivity {
                     // 1. Built-in function
                     // floatingActionButton.show();
                     // 2. Custom function
-                    animateShowFab();
+//                    animateShowFab();
+                    floatingActionButton.animate()
+                            .scaleX(1)
+                            .scaleY(1)
+                            .setInterpolator(new OvershootInterpolator())
+                            .setDuration(350)
+                            .start();
                 }
             }
         });
