@@ -1,10 +1,12 @@
 package com.example.feorin.hidingfab;
 
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.transition.TransitionManager;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -20,11 +22,14 @@ public class MainActivity extends AppCompatActivity {
     private MyAdapter mAdapter;
     private FloatingActionButton floatingActionButton;
     boolean mIsHiding = false;
+    private CoordinatorLayout mainContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mainContent = (CoordinatorLayout) findViewById(R.id.main_content);
 
         floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
@@ -43,34 +48,24 @@ public class MainActivity extends AppCompatActivity {
                 // (scroll, fling) we want our FAB to disappear.
 
                 if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    // We can choose between either of these:
-                    // 1. Built-in function
-                    // floatingActionButton.hide();
-                    // 2. Custom function
-//                    animateHideFab();
-                    floatingActionButton.animate()
-                            .scaleX(0)
-                            .scaleY(0)
-                            .setInterpolator(new LinearInterpolator())
-                            .setDuration(200)
-                            .start();
+                    ScaleTransition scaleTransition = new ScaleTransition();
+                    scaleTransition.addTarget(floatingActionButton);
+                    scaleTransition.setDuration(200);
+                    scaleTransition.setInterpolator(new LinearInterpolator());
 
+                    TransitionManager.beginDelayedTransition(mainContent, scaleTransition);
+                    floatingActionButton.setVisibility(View.INVISIBLE);
 
                 }
-                // While RecyclerView enters idle state
-                // we want our FAB to reappear.
+
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    // We can choose between either of these:
-                    // 1. Built-in function
-                    // floatingActionButton.show();
-                    // 2. Custom function
-//                    animateShowFab();
-                    floatingActionButton.animate()
-                            .scaleX(1)
-                            .scaleY(1)
-                            .setInterpolator(new OvershootInterpolator())
-                            .setDuration(350)
-                            .start();
+                    ScaleTransition scaleTransition = new ScaleTransition();
+                    scaleTransition.addTarget(floatingActionButton);
+                    scaleTransition.setDuration(350);
+                    scaleTransition.setInterpolator(new OvershootInterpolator());
+
+                    TransitionManager.beginDelayedTransition(mainContent, scaleTransition);
+                    floatingActionButton.setVisibility(View.VISIBLE);
                 }
             }
         });
